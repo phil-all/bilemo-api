@@ -47,9 +47,5 @@ grumphp:
             triggered_by: ['php']
             memory_limit: "-1"
             use_grumphp_paths: true
-        securitychecker_symfony:
-            lockfile: ./composer.lock
-            format: ~
-            run_always: false
     testsuites: []
     extensions: []
