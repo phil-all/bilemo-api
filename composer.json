@@ -15,6 +15,9 @@
         "symfony/yaml": "5.4.*"
     },
     "require-dev": {
+        "phpro/grumphp": "^1.9",
+        "phpstan/phpstan": "^1.4",
+        "squizlabs/php_codesniffer": "^3.6"
     },
     "config": {
         "allow-plugins": {
