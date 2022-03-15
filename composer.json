@@ -25,6 +25,7 @@
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "phpro/grumphp": "^1.9",
         "phpstan/phpstan": "^1.4",
+        "phpstan/phpstan-doctrine": "^1.2",
         "squizlabs/php_codesniffer": "^3.6",
         "symfony/maker-bundle": "^1.38"
     },
