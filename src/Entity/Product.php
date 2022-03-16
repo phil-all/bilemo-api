@@ -43,22 +43,22 @@ class Product
     private int $stock;
 
     /**
-     * @var ArrayCollection<int, Color>
+     * @var Collection<int, Color>
      *
      * Many Products have Many Colors
      * @ORM\ManyToMany(targetEntity=Color::class, inversedBy="products")
      * @JoinTable(name="products_has_color")
      */
-    private ArrayCollection $colors;
+    private Collection $colors;
 
     /**
-     * @var ArrayCollection<int, Hardware>
+     * @var Collection<int, Hardware>
      *
      * Many Products have Many Hardware
      * @ORM\ManyToMany(targetEntity=Hardware::class, inversedBy="products")
      * @JoinTable(name="products_has_hardware")
      */
-    private ArrayCollection $hardwares;
+    private Collection $hardwares;
 
     public function __construct()
     {

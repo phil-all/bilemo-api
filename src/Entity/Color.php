@@ -24,12 +24,12 @@ class Color
      */
     private string $name;
     /**
-     * @var ArrayCollection<int, Product>
+     * @var Collection<int, Product>
      *
      * Many Options have Many Products
      * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="color")
      */
-    private ArrayCollection $products;
+    private Collection $products;
 
     public function __construct()
     {
