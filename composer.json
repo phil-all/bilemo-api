@@ -60,7 +60,10 @@
     },
     "scripts": {
         "dev-bash": [
-            "docker exec -it bilemo-api_php_1"
+            "docker exec -it bilemo-api_php_1 bash"
+        ],
+        "grum": [
+            "vendor/bin/grumphp run"
         ],
         "set-db": [
             "php bin/console doctrine:database:drop --if-exists --force",
