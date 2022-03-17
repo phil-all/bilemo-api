@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\JoinTable;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -19,26 +20,31 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"product:get-all", "product:get-one"})
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=80)
+     * @Groups({"product:get-all", "product:get-one"})
      */
     private string $model;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups("product:get-one")
      */
     private string $description;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"product:get-all", "product:get-one"})
      */
     private float $price;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("product:get-one")
      */
     private int $stock;
 
