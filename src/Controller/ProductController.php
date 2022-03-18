@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-use App\Service\Pager;
 use App\Entity\Product;
-use App\Repository\ProductRepository;
+use App\Service\Pager\Pager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,13 +20,11 @@ class ProductController extends AbstractController
     /**
      * @Route("/products", name="api_products_list", methods={"GET"})
      */
-    public function showAll(Request $request, ProductRepository $repo, Pager $pager): JsonResponse
+    public function showAll(Request $request, Pager $pager): JsonResponse
     {
-        $currentRoute = $request->attributes->get('_route');
-        $currentPage  = (int)$request->query->get('page', 1);
-        $limit        = 7;
+        $limit = 7;
 
-        $pager->init($repo, $currentPage, $currentRoute, $limit);
+        $pager->init($request, $limit, 'Product');
 
         return $this->json($pager->paginate(), 200, [], ['groups' => 'product:get-all']);
     }
