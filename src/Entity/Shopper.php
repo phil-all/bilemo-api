@@ -6,6 +6,7 @@ use App\Entity\Client;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ShopperRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ShopperRepository::class)
@@ -16,32 +17,38 @@ class Shopper
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("user:get-one")
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("user:get-one")
      */
     private string $email;
 
     /**
      * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="shopper")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("user:get-one")
      */
     private Client $client;
 
     /**
      * @ORM\Column(type="string", length=80)
+     * @Groups("user:get-one")
      */
     private string $firstName;
 
     /**
      * @ORM\Column(type="string", length=80)
+     * @Groups("user:get-one")
      */
     private string $lastName;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups("user:get-one")
      */
     private DateTimeImmutable $created_at;
 
