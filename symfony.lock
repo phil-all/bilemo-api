@@ -116,6 +116,9 @@
     "doctrine/sql-formatter": {
         "version": "1.1.2"
     },
+    "fakerphp/faker": {
+        "version": "v1.19.0"
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.7"
     },
@@ -137,11 +140,26 @@
     "ondram/ci-detector": {
         "version": "4.1.0"
     },
+    "phpdocumentor/reflection-common": {
+        "version": "2.2.0"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "5.3.0"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "1.6.0"
+    },
     "phpro/grumphp": {
         "version": "v1.9.0"
     },
+    "phpstan/phpdoc-parser": {
+        "version": "1.2.0"
+    },
     "phpstan/phpstan": {
         "version": "1.4.10"
+    },
+    "phpstan/phpstan-doctrine": {
+        "version": "1.2.11"
     },
     "psr/cache": {
         "version": "2.0.0"
@@ -279,6 +297,9 @@
     "symfony/options-resolver": {
         "version": "v5.4.3"
     },
+    "symfony/password-hasher": {
+        "version": "v5.4.3"
+    },
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.25.0"
     },
@@ -300,6 +321,12 @@
     "symfony/process": {
         "version": "v5.4.5"
     },
+    "symfony/property-access": {
+        "version": "v5.4.5"
+    },
+    "symfony/property-info": {
+        "version": "v5.4.3"
+    },
     "symfony/proxy-manager-bridge": {
         "version": "v5.4.6"
     },
@@ -319,6 +346,33 @@
     "symfony/runtime": {
         "version": "v5.4.5"
     },
+    "symfony/security-bundle": {
+        "version": "5.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.3",
+            "ref": "98f1f2b0d635908c2b40f3675da2d23b1a069d30"
+        },
+        "files": [
+            "config/packages/security.yaml"
+        ]
+    },
+    "symfony/security-core": {
+        "version": "v5.4.5"
+    },
+    "symfony/security-csrf": {
+        "version": "v5.4.3"
+    },
+    "symfony/security-guard": {
+        "version": "v5.4.3"
+    },
+    "symfony/security-http": {
+        "version": "v5.4.5"
+    },
+    "symfony/serializer": {
+        "version": "v5.4.6"
+    },
     "symfony/service-contracts": {
         "version": "v2.4.1"
     },
@@ -336,5 +390,8 @@
     },
     "symfony/yaml": {
         "version": "v5.4.3"
+    },
+    "webmozart/assert": {
+        "version": "1.10.0"
     }
 }
