@@ -23,6 +23,12 @@
     "amphp/sync": {
         "version": "v1.4.2"
     },
+    "composer/pcre": {
+        "version": "1.0.1"
+    },
+    "composer/xdebug-handler": {
+        "version": "2.0.5"
+    },
     "doctrine/annotations": {
         "version": "1.13",
         "recipe": {
@@ -140,6 +146,9 @@
     "ondram/ci-detector": {
         "version": "4.1.0"
     },
+    "pdepend/pdepend": {
+        "version": "2.10.3"
+    },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
     },
@@ -148,6 +157,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.6.0"
+    },
+    "phpmd/phpmd": {
+        "version": "2.11.1"
     },
     "phpro/grumphp": {
         "version": "v1.9.0"
