@@ -2,10 +2,14 @@
 
 namespace App\Repository;
 
+use App\Entity\Client;
+use DateTimeImmutable;
 use App\Entity\Shopper;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
@@ -16,9 +20,35 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class ShopperRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var SerializerInterface
+     */
+    private SerializerInterface $serializer;
+
+    public function __construct(ManagerRegistry $registry, SerializerInterface $serializer)
     {
         parent::__construct($registry, Shopper::class);
+
+        $this->serializer = $serializer;
+    }
+
+    /**
+     * Create a new shopper
+     *
+     * @param Request $request
+     * @param Client  $client
+     *
+     * @return Shopper
+     */
+    public function new(Request $request, Client $client): Shopper
+    {
+        $shopper = ($this->serializer->deserialize($request->getContent(), Shopper::class, 'json'))
+            ->setClient($client)
+            ->setCreatedAt(new DateTimeImmutable('now'));
+
+        $this->add($shopper);
+
+        return $shopper;
     }
 
     /**
