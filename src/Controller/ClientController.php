@@ -23,7 +23,7 @@ class ClientController extends AbstractController
     /**
      * @Route("/clients/{id}/shoppers", name="api_client_get_shoppers", methods={"GET"})
      */
-    public function showAllUsers(Request $request, Pager $pager, Client $client): JsonResponse
+    public function showAllUsers(Request $request, Pager $pager): JsonResponse
     {
         $limit = 7;
 
@@ -33,11 +33,9 @@ class ClientController extends AbstractController
     }
 
     /**
-     * @Route("/clients/{client_id}/shoppers/{shopper_id}", name="api_client_get_shopper", methods={"GET"})
-     * @ParamConverter("client", options={"mapping": {"client_id":"id"}})
-     * @ParamConverter("shopper", options={"mapping": {"shopper_id":"id"}})
+     * @Route("/clients/{serial}/shoppers/{id}", name="api_client_get_shopper", methods={"GET"})
      */
-    public function showOneUser(Request $request, Pager $pager, Client $client, Shopper $shopper): JsonResponse
+    public function showOneUser(Shopper $shopper): JsonResponse
     {
         return $this->json($shopper, 200, [], ['groups' => 'user:get-one']);
     }
@@ -57,7 +55,7 @@ class ClientController extends AbstractController
      * @ParamConverter("client", options={"mapping": {"client_id":"id"}})
      * @ParamConverter("shopper", options={"mapping": {"shopper_id":"id"}})
      */
-    public function remove(Request $request, Shopper $shopper, ShopperRepository $repo): JsonResponse
+    public function remove(Shopper $shopper, ShopperRepository $repo): JsonResponse
     {
         $repo->remove($shopper);
 
