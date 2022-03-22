@@ -8,8 +8,6 @@ use App\Entity\Shopper;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
@@ -20,29 +18,22 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class ShopperRepository extends ServiceEntityRepository
 {
-    /**
-     * @var SerializerInterface
-     */
-    private SerializerInterface $serializer;
-
-    public function __construct(ManagerRegistry $registry, SerializerInterface $serializer)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Shopper::class);
-
-        $this->serializer = $serializer;
     }
 
     /**
-     * Create a new shopper
+     * New shopper creation ending
      *
-     * @param Request $request
      * @param Client  $client
+     * @param Shopper $shopper
      *
      * @return Shopper
      */
-    public function new(Request $request, Client $client): Shopper
+    public function finalize(Client $client, Shopper $shopper): Shopper
     {
-        $shopper = ($this->serializer->deserialize($request->getContent(), Shopper::class, 'json'))
+        $shopper
             ->setClient($client)
             ->setCreatedAt(new DateTimeImmutable('now'));
 

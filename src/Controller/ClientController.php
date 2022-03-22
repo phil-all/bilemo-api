@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Entity\Client;
 use App\Entity\Shopper;
 use App\Service\Pager\Pager;
+use App\Form\ShopperFormType;
 use App\Repository\ShopperRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use App\Service\FormErrorConvertor\FormValidationHandler as Validator;
 
 /**
  * Manage clients entry points
@@ -43,9 +45,17 @@ class ClientController extends AbstractController
     /**
      * @Route("/clients/{id}/shoppers", name="api_client_post_shopper", methods={"POST"})
      */
-    public function new(Request $request, Client $client, ShopperRepository $repo): JsonResponse
+    public function new(Request $request, Client $client, ShopperRepository $repo, Validator $validator): JsonResponse
     {
-        $shopper = $repo->new($request, $client);
+        $data    = json_decode($request->getContent(), true);
+        $shopper = new Shopper();
+        $form    = $this->createForm(ShopperFormType::class, $shopper)->submit($data);
+
+        if (!$form->isValid()) {
+            return $validator->unvalidate($form);
+        }
+
+        $shopper = $repo->finalize($client, $shopper);
 
         return $this->json($shopper, 201, [], ['groups' => 'user:get-one']);
     }
