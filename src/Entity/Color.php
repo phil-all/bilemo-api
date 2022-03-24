@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ColorRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ColorRepository::class)
@@ -21,13 +22,13 @@ class Color
 
     /**
      * @ORM\Column(type="string", length=45)
+     * @Groups({"product:get-all", "product:get-one"})
      */
-    private string $name;
+    private string $color;
+
     /**
      * @var Collection<int, Product>
-     *
-     * Many Options have Many Products
-     * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="color")
+     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="color", orphanRemoval=true)
      */
     private Collection $products;
 
@@ -41,9 +42,16 @@ class Color
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getColor(): ?string
     {
-        return $this->name;
+        return $this->color;
+    }
+
+    public function setColor(string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
     }
 
     /**
@@ -54,18 +62,11 @@ class Color
         return $this->products;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function addProduct(Product $product): self
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
-            $product->addColor($this);
+            $product->setColor($this);
         }
 
         return $this;
@@ -74,7 +75,10 @@ class Color
     public function removeProduct(Product $product): self
     {
         if ($this->products->removeElement($product)) {
-            $product->removeColor($this);
+            // set the owning side to null (unless already changed)
+            if ($product->getColor() === $this) {
+                $product->setColor(null);
+            }
         }
 
         return $this;

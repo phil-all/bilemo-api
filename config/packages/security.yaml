@@ -12,10 +12,11 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\Client
-                property: username
+                property: email
+        # used to reload user from session & other features (e.g. switch_user)
 
     role_hierarchy:
-        ROLE_API_CLIENT: [ROLE_USER]
+        ROLE_CLIENT: [ROLE_USER]
 
     firewalls:
         dev:

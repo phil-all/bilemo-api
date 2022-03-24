@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Client;
-use DateTimeImmutable;
 use App\Entity\Shopper;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\OptimisticLockException;
@@ -34,8 +33,7 @@ class ShopperRepository extends ServiceEntityRepository
     public function finalize(Client $client, Shopper $shopper): Shopper
     {
         $shopper
-            ->setClient($client)
-            ->setCreatedAt(new DateTimeImmutable('now'));
+            ->setClient($client);
 
         $this->add($shopper);
 

@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use DateTimeImmutable;
+use App\Entity\Shopper;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -20,15 +19,13 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("user:get-one")
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups("user:get-one")
      */
-    private string $username;
+    private string $email;
 
     /**
      * @ORM\Column(type="json")
@@ -39,17 +36,23 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private string $password;
+    private $password;
 
     /**
+     * @ORM\Column(type="string", length=45)
+     */
+    private string $company;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private float $discountRate;
+
+    /**
+     * @var Collection<int, Shopper>
      * @ORM\OneToMany(targetEntity=Shopper::class, mappedBy="client", orphanRemoval=true)
      */
     private Collection $shopper;
-
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
-    private DateTimeImmutable $created_at;
 
     public function __construct()
     {
@@ -61,19 +64,14 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUsername(): string
+    public function getEmail(): ?string
     {
-        return (string) $this->username;
+        return $this->email;
     }
 
-    public function setUsername(string $username): self
+    public function setEmail(string $email): self
     {
-        $this->username = $username;
+        $this->email = $email;
 
         return $this;
     }
@@ -85,7 +83,15 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        return (string) $this->email;
+    }
+
+    /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->email;
     }
 
     /**
@@ -142,6 +148,30 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
+    public function setCompany(string $company): self
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    public function getDiscountRate(): ?float
+    {
+        return $this->discountRate;
+    }
+
+    public function setDiscountRate(?float $discountRate): self
+    {
+        $this->discountRate = $discountRate;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Shopper>
      */
@@ -168,18 +198,6 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
                 $shopper->setClient(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
-    {
-        $this->created_at = $created_at;
 
         return $this;
     }
