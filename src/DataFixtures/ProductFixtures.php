@@ -2,39 +2,40 @@
 
 namespace App\DataFixtures;
 
+use Faker\Factory;
 use App\Entity\Product;
-use App\Service\FakeMobile;
+use App\DataFixtures\OptionFixtures;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class ProductFixtures extends Fixture
+class ProductFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = new FakeMobile();
+        $faker = Factory::create();
 
-        for ($i = 1; $i <= 30; $i++) {
-            $product = new Product();
-            $model   = $faker->fakerModel();
+        for ($i = 0; $i < 15; $i++) {
+            $model = $this->getReference('model_' . $i);
 
-            $product
-                ->setModel($model)
-                ->setDescription($faker->fakerContent($model))
-                ->setPrice($faker->fakerPrice())
-                ->setStock($faker->fakerStock());
+            for ($j = 0; $j < 3; $j++) {
+                $product = (new Product())
+                    ->setEan13($faker->ean13())
+                    ->setStock(rand(80, 7850))
+                    ->setColor($this->getReference('color_' . rand(0, 7)))
+                    ->setModel($model);
 
-            // for ($i = 0; $i <= rand(1, 3); $i++) {
-            //     $product->addColor($this->getReference('color_' . rand(0, 6)));
-            // }
-
-            // for ($i = 0; $i <= rand(4, 7); $i++) {
-            //     $product->addHardware($this->getReference('hardware_' . rand(0, 9)));
-            // }
-
-            $manager->persist($product);
+                $manager->persist($product);
+            }
         }
 
-
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            ModelFixtures::class
+        ];
     }
 }

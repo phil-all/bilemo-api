@@ -2,35 +2,36 @@
 
 namespace App\DataFixtures;
 
-use DateTime;
 use Faker\Factory;
-use DateTimeImmutable;
+use App\Entity\Client;
 use App\Entity\Shopper;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class ShopperFixtures extends Fixture
+class ShopperFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
 
         for ($i = 0; $i < 500; $i++) {
-            /** @var DateTime */
-            $date = $faker->dateTimeBetween('-29 day', 'now', 'Europe/Paris');
-
-            $shopper = new Shopper();
-
-            $shopper
+            $shopper = (new Shopper())
+                ->setEmail($faker->email())
                 ->setFirstName($faker->firstName())
                 ->setLastName($faker->lastName())
-                ->setEmail($faker->email())
-                ->setClient($this->getReference('client_' . rand(0, 2)))
-                ->setCreatedAt(DateTimeImmutable::createFromMutable($date));
+                ->setClient($this->getReference(('client_' . rand(0, 2))));
 
             $manager->persist($shopper);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            ClientFixtures::class
+        ];
     }
 }
