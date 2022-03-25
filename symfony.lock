@@ -137,6 +137,9 @@
     "laravel/serializable-closure": {
         "version": "v1.1.1"
     },
+    "liip/functional-test-bundle": {
+        "version": "4.5.1"
+    },
     "liip/test-fixtures-bundle": {
         "version": "2.2.1"
     },
@@ -327,9 +330,6 @@
         "files": [
             "bin/console"
         ]
-    },
-    "symfony/css-selector": {
-        "version": "v5.4.3"
     },
     "symfony/dependency-injection": {
         "version": "v5.4.6"

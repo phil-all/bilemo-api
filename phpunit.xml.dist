@@ -18,7 +18,7 @@
         <env name="BOOTSTRAP_CLEAR_CACHE_ENV" value="test"/>
 
         <!-- ###+ doctrine/doctrine-bundle ### -->
-        <env name="DATABASE_URL" value="sqlite:///data/database_test.sqlite"/>
+        <env name="DATABASE_URL" value="sqlite:///%kernel.cache_dir%/test.db"/>
         <!-- ###- doctrine/doctrine-bundle ### -->
 
         <!-- ###+ symfony/framework-bundle ### -->
