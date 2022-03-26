@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Client;
 use App\Entity\Shopper;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\OptimisticLockException;
@@ -19,6 +20,24 @@ class ShopperRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Shopper::class);
+    }
+
+    /**
+     * New shopper creation ending
+     *
+     * @param Client  $client
+     * @param Shopper $shopper
+     *
+     * @return Shopper
+     */
+    public function finalize(Client $client, Shopper $shopper): Shopper
+    {
+        $shopper
+            ->setClient($client);
+
+        $this->add($shopper);
+
+        return $shopper;
     }
 
     /**

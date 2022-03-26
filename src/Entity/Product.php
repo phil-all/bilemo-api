@@ -3,12 +3,9 @@
 namespace App\Entity;
 
 use App\Entity\Color;
-use App\Entity\Hardware;
+use App\Entity\Model;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinTable;
 use App\Repository\ProductRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -25,90 +22,44 @@ class Product
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=80)
+     * @ORM\Column(type="string", length=13)
+     * @Groups({"product:get-one"})
+     */
+    private string $ean13;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
      * @Groups({"product:get-all", "product:get-one"})
-     */
-    private string $model;
-
-    /**
-     * @ORM\Column(type="text")
-     * @Groups("product:get-one")
-     */
-    private string $description;
-
-    /**
-     * @ORM\Column(type="float")
-     * @Groups({"product:get-all", "product:get-one"})
-     */
-    private float $price;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups("product:get-one")
      */
     private int $stock;
 
     /**
-     * @var Collection<int, Color>
-     *
-     * Many Products have Many Colors
-     * @ORM\ManyToMany(targetEntity=Color::class, inversedBy="products")
-     * @JoinTable(name="products_has_color")
+     * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="products")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"product:get-all", "product:get-one"})
      */
-    private Collection $colors;
+    private Model $model;
 
     /**
-     * @var Collection<int, Hardware>
-     *
-     * Many Products have Many Hardware
-     * @ORM\ManyToMany(targetEntity=Hardware::class, inversedBy="products")
-     * @JoinTable(name="products_has_hardware")
+     * @ORM\ManyToOne(targetEntity=Color::class, inversedBy="products")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"product:get-all", "product:get-one"})
      */
-    private Collection $hardwares;
-
-    public function __construct()
-    {
-        $this->colors    = new ArrayCollection();
-        $this->hardwares = new ArrayCollection();
-    }
+    private Color $color;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getModel(): ?string
+    public function getEan13(): ?string
     {
-        return $this->model;
+        return $this->ean13;
     }
 
-    public function setModel(string $model): self
+    public function setEan13(string $ean13): self
     {
-        $this->model = $model;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): self
-    {
-        $this->price = $price;
+        $this->ean13 = $ean13;
 
         return $this;
     }
@@ -118,57 +69,33 @@ class Product
         return $this->stock;
     }
 
-    /**
-     * @return Collection<int, Color>
-     */
-    public function getColors(): Collection
-    {
-        return $this->colors;
-    }
-
-    /**
-     * @return Collection<int, Hardware>
-     */
-    public function getHardwares(): Collection
-    {
-        return $this->hardwares;
-    }
-
-    public function setStock(int $stock): self
+    public function setStock(?int $stock): self
     {
         $this->stock = $stock;
 
         return $this;
     }
 
-    public function addColor(Color $color): self
+    public function getModel(): ?Model
     {
-        if (!$this->colors->contains($color)) {
-            $this->colors[] = $color;
-        }
+        return $this->model;
+    }
+
+    public function setModel(?Model $model): self
+    {
+        $this->model = $model;
 
         return $this;
     }
 
-    public function addHardware(Hardware $hardware): self
+    public function getColor(): ?Color
     {
-        if (!$this->hardwares->contains($hardware)) {
-            $this->hardwares[] = $hardware;
-        }
-
-        return $this;
+        return $this->color;
     }
 
-    public function removeColor(Color $color): self
+    public function setColor(?Color $color): self
     {
-        $this->colors->removeElement($color);
-
-        return $this;
-    }
-
-    public function removeHardware(Hardware $hardware): self
-    {
-        $this->hardwares->removeElement($hardware);
+        $this->color = $color;
 
         return $this;
     }

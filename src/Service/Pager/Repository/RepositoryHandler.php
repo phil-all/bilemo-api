@@ -113,7 +113,7 @@ class RepositoryHandler
     /**
      * Get query on single table result
      *
-     * @return array<object>
+     * @return array
      */
     public function selectOnSingleTalbe(): array
     {
@@ -122,7 +122,7 @@ class RepositoryHandler
             ->setFirstResult(($this->currentPage * $this->limit) - $this->limit)
             ->setMaxResults($this->limit)
             ->getQuery()
-            ->getResult();
+            ->getArrayResult();
     }
 
     /**
@@ -132,8 +132,6 @@ class RepositoryHandler
      */
     public function selectOnJoinedTables(): array
     {
-        // start from sql: SELECT  s.* FROM shopper AS s JOIN client As m ON m.id = s.client_id WHERE m.id = 1
-
         return $this->repository
             ->createQueryBuilder('s')
             ->select('s.id, s.email')
@@ -143,6 +141,6 @@ class RepositoryHandler
             ->setMaxResults($this->limit)
             ->setParameter('client_id', $this->secondaryId)
             ->getQuery()
-            ->getResult();
+            ->getArrayResult();
     }
 }

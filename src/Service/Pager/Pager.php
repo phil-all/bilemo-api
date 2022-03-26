@@ -2,6 +2,7 @@
 
 namespace App\Service\Pager;
 
+use Doctrine\ORM\Mapping\Entity;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\Pager\Repository\RepositoryHandler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -81,7 +82,22 @@ class Pager
      */
     public function paginate(): array
     {
+        /** @var array */
+        $items = $this->getPaginatedItems();
+
         $itemsName = $this->main . 's';
+
+        foreach ($items as &$item) {
+            $url = $this->router->generate(
+                $this->request->attributes->get('_route'),
+                [
+                    'id' => $item['id']
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            $item = array_merge($item, ['Link' => $url . '/' . $item['id']]);
+        }
 
         return [
             'pagination' => [
@@ -92,7 +108,7 @@ class Pager
                 'next'     => $this->getNext(),
                 'last'     => $this->getLast()
             ],
-            $itemsName => $this->getPaginatedItems()
+            $itemsName => $items
         ];
     }
 

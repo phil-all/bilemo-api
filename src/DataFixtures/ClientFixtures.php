@@ -8,9 +8,10 @@ use App\Entity\Client;
 use DateTimeImmutable;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class ClientFixtures extends Fixture
+class ClientFixtures extends Fixture implements DependentFixtureInterface
 {
     /**
      * @var UserPasswordHasherInterface
@@ -30,29 +31,29 @@ class ClientFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('en_US');
-        $list  = [];
 
         for ($i = 0; $i < 3; $i++) {
-            $list[$i] = $faker->lastName() . ' ' . $faker->companySuffix();
-        }
-
-        for ($j = 0; $j < count($list); $j++) {
-            /** @var DateTime */
-            $date = $faker->dateTimeBetween('-60 day', '-30 day', 'Europe/Paris');
-
             $client = new Client();
 
             $client
-                ->setUsername($list[$j])
-                ->setRoles(['ROLE_API_CLIENT'])
+                ->setEmail($faker->companyEmail())
+                ->setRoles(['ROLE_CLIENT'])
                 ->setPassword($this->hasher->hashPassword($client, 'pass1234'))
-                ->setCreatedAt(DateTimeImmutable::createFromMutable($date));
+                ->setCompany($faker->lastName() . ' ' . $faker->companySuffix())
+                ->setDiscountRate($faker->randomFloat(2, 1, 20));
 
             $manager->persist($client);
 
-            $this->addReference('client_' . $j, $client);
+            $this->addReference('client_' . $i, $client);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            ModelFixtures::class
+        ];
     }
 }

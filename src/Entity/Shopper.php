@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Entity\Client;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ShopperRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -17,40 +16,33 @@ class Shopper
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("user:get-one")
+     * @Groups({"user:get-one"})
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("user:get-one")
+     * @Groups({"user:get-one"})
      */
     private string $email;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="shopper")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups("user:get-one")
-     */
-    private Client $client;
-
-    /**
-     * @ORM\Column(type="string", length=80)
-     * @Groups("user:get-one")
+     * @ORM\Column(type="string", length=45)
+     * @Groups({"user:get-one"})
      */
     private string $firstName;
 
     /**
-     * @ORM\Column(type="string", length=80)
-     * @Groups("user:get-one")
+     * @ORM\Column(type="string", length=45)
+     * @Groups({"user:get-one"})
      */
     private string $lastName;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups("user:get-one")
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="shopper")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private DateTimeImmutable $created_at;
+    private Client $client;
 
     public function getId(): ?int
     {
@@ -65,18 +57,6 @@ class Shopper
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getClient(): ?Client
-    {
-        return $this->client;
-    }
-
-    public function setClient(?Client $client): self
-    {
-        $this->client = $client;
 
         return $this;
     }
@@ -105,14 +85,14 @@ class Shopper
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getClient(): ?Client
     {
-        return $this->created_at;
+        return $this->client;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    public function setClient(?Client $client): self
     {
-        $this->created_at = $created_at;
+        $this->client = $client;
 
         return $this;
     }

@@ -47,5 +47,11 @@ grumphp:
             triggered_by: ['php']
             memory_limit: "-1"
             use_grumphp_paths: true
+        phpmd:
+            whitelist_patterns: []
+            exclude: [/migrations/]
+            report_format: ansi
+            ruleset: ['unusedcode']
+            triggered_by: ['php']
     testsuites: []
     extensions: []

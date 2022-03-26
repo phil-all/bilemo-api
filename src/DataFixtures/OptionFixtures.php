@@ -2,15 +2,21 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Hardware;
+use Faker\Factory;
+use App\Entity\Option;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class HardwareFixtures extends Fixture
+/**
+ * OptionFixtures class
+ * @package App\DataFixtures
+ */
+class OptionFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $hardwares = [
+        $list = [
             0 => 'wifi',
             1 => 'bluetooth',
             2 => 'GPS',
@@ -23,14 +29,21 @@ class HardwareFixtures extends Fixture
             9 => 'étanche'
         ];
 
-        foreach ($hardwares as $key => $value) {
-            $hardware = (new Hardware())->setName($value);
+        foreach ($list as $key => $value) {
+            $hardware = (new Option())->setOption($value);
 
             $manager->persist($hardware);
 
-            $this->addReference('hardware_' . $key, $hardware);
+            $this->addReference('option_' . $key, $hardware);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            ColorFixtures::class
+        ];
     }
 }
