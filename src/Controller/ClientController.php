@@ -29,13 +29,14 @@ class ClientController extends AbstractController
     {
         $limit = 7;
 
-        $pager->init($request, $limit, 'Shopper', 'Client');
+        $pager->init($request, $limit, Shopper::class, Client::class);
 
         return $this->json($pager->paginate(), 200, [], []);
     }
 
     /**
-     * @Route("/clients/{serial}/shoppers/{id}", name="api_client_get_shopper", methods={"GET"})
+     * @Route("/clients/{id}/shoppers/{shopper_id}", name="api_client_get_shopper", methods={"GET"})
+     * @ParamConverter("shopper", options={"mapping": {"shopper_id":"id"}})
      */
     public function showOneUser(Shopper $shopper): JsonResponse
     {
@@ -61,8 +62,7 @@ class ClientController extends AbstractController
     }
 
     /**
-     * @Route("/clients/{client_id}/shoppers/{shopper_id}", name="api_client_delete_shopper", methods={"DELETE"})
-     * @ParamConverter("client", options={"mapping": {"client_id":"id"}})
+     * @Route("/clients/{id}/shoppers/{shopper_id}", name="api_client_delete_shopper", methods={"DELETE"})
      * @ParamConverter("shopper", options={"mapping": {"shopper_id":"id"}})
      */
     public function remove(Shopper $shopper, ShopperRepository $repo): JsonResponse

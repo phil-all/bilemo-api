@@ -24,7 +24,7 @@ class ProductController extends AbstractController
     {
         $limit = 7;
 
-        $pager->init($request, $limit, 'Product');
+        $pager->init($request, $limit, Product::class);
 
         return $this->json($pager->paginate(), 200, [], ['groups' => 'product:get-all']);
     }
