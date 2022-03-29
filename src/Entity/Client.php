@@ -26,7 +26,7 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface, JWTUs
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
-    private string $email;
+    private ?string $email = null;
 
     /**
      * @ORM\Column(type="json")
@@ -89,7 +89,7 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface, JWTUs
      *
      * @see UserInterface
      */
-    public function getUserIdentifier(): string
+    public function getUserIdentifier(): ?string
     {
         return (string) $this->email;
     }
