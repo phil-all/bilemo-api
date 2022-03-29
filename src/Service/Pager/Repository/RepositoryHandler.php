@@ -67,15 +67,14 @@ class RepositoryHandler
     /**
      * Get repository from entity name
      *
-     * @param string $entityName
+     * @param string $entity
+     * @psalm-param class-string<T> $entity
      *
      * @return EntityRepository
+     * @template T of object
      */
-    public function getRepository(string $entityName): EntityRepository
+    public function getRepository(string $entity): EntityRepository
     {
-        /** @var class-string */
-        $entity = 'App\Entity\\' . $entityName;
-
         return $this->manager->getRepository($entity);
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Service\Pager;
 
-use Doctrine\ORM\Mapping\Entity;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\Pager\Repository\RepositoryHandler;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -17,6 +16,7 @@ class Pager
      * @var string
      */
     private string $main;
+
     /**
      * @var integer
      */
@@ -57,9 +57,9 @@ class Pager
     /**
      * Initialize pager service
      *
-     * @param Request    $request
-     * @param integer    $limit
-     * @param string     $main main entity required
+     * @param Request     $request
+     * @param integer     $limit
+     * @param string      $main main entity required (eg EntityName::class)
      * @param string|null $secondary optionnal: entity managing the main entity
      *
      * @return void
@@ -68,7 +68,7 @@ class Pager
     {
         $this->request = $request;
         $this->limit   = $limit;
-        $this->main    = strtolower($main);
+        $this->main    = $main;
 
         $this->setSecondary($request, $secondary);
 
@@ -85,7 +85,8 @@ class Pager
         /** @var array */
         $items = $this->getPaginatedItems();
 
-        $itemsName = $this->main . 's';
+        /** @var string $className */
+        $className = strtolower((new \ReflectionClass($this->main))->getShortName());
 
         foreach ($items as &$item) {
             $url = $this->router->generate(
@@ -108,7 +109,7 @@ class Pager
                 'next'     => $this->getNext(),
                 'last'     => $this->getLast()
             ],
-            $itemsName => $items
+            $className . 's' => $items
         ];
     }
 
