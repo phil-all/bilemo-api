@@ -13,12 +13,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  * Manage roducts entry points
  * @package App\Controller
  *
- * @Route("/api")
+ * @Route("/api/v1")
+ * @Route("/api/v2")
  */
-class ProductController extends AbstractController
+class ProductCommonController extends AbstractController
 {
     /**
-     * @Route("/products", name="api_products_list", methods={"GET"})
+     * @Route("/products", name="api_get_products", methods={"GET"})
      */
     public function showAll(Request $request, Pager $pager): JsonResponse
     {
@@ -30,7 +31,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/products/{id}", name="api_products_single")
+     * @Route("/products/{id}", name="api_get_product")
      */
     public function showOne(Product $product): JsonResponse
     {

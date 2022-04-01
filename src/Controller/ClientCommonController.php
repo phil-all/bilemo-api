@@ -15,12 +15,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use App\Service\FormErrorConvertor\FormValidationHandler as Validator;
 
 /**
- * Manage clients entry points
+ * Manage clients entry points for versions 1 & 2
  * @package App\Controller
- *
- * @Route("/api")
  */
-class ClientController extends AbstractController
+class ClientCommonController extends AbstractController
 {
     /**
      * @Route("/clients/{id}/shoppers", name="api_client_get_shoppers", methods={"GET"})
