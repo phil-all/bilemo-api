@@ -26,7 +26,7 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface, JWTUs
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
-    private string $email;
+    private ?string $email = null;
 
     /**
      * @ORM\Column(type="json")
@@ -89,7 +89,7 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface, JWTUs
      *
      * @see UserInterface
      */
-    public function getUserIdentifier(): string
+    public function getUserIdentifier(): ?string
     {
         return (string) $this->email;
     }
@@ -109,7 +109,7 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface, JWTUs
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_CLIENT';
 
         return array_unique($roles);
     }

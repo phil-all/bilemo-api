@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\v1;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,14 +9,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Manage authentication
- * @package App\Controller
+ * @package App\Controller\v1
  *
- * @Route("/api")
+ * @Route("/api/v1")
  */
 class SecurityController extends AbstractController
 {
     /**
-     * @Route("/login", name="api_login", methods={"POST"})
+     * @Route("/login", name="api_v1_login", methods={"POST"})
      */
     public function index(Request $request): Response
     {
