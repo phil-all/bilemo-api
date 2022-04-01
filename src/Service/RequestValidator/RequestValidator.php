@@ -4,6 +4,8 @@ namespace App\Service\RequestValidator;
 
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\RequestValidator\Components\Checker;
+use App\Service\JWTTokenInspector\JWTTokenInspector as JWT;
+use App\Service\RequestInspector\RequestInspector as Inspector;
 
 /**
  * Used to validate request
@@ -11,21 +13,26 @@ use App\Service\RequestValidator\Components\Checker;
  */
 class RequestValidator
 {
-    use \App\Service\RequestValidator\Components\JWTToken;
+    /**
+     * @var Inspector
+     */
+    private Inspector $inspector;
 
     /**
-     * @var Checker
+     * @var JWT
      */
-    private Checker $checker;
+    private JWT $jwt;
 
     /**
      * RequestValidator constructor
      *
-     * @param Checker $checker
+     * @param Inspector $inspector
+     * @param JWT       $jwt
      */
-    public function __construct(Checker $checker)
+    public function __construct(Inspector $inspector, JWT $jwt)
     {
-        $this->checker = $checker;
+        $this->inspector = $inspector;
+        $this->jwt       = $jwt;
     }
 
     /**
@@ -37,7 +44,8 @@ class RequestValidator
      */
     public function init(Request $request): self
     {
-        $this->checker->setRequest($request);
+        $this->inspector->setRequest($request);
+        $this->jwt->setRequest($request);
 
         return $this;
     }
@@ -49,7 +57,7 @@ class RequestValidator
      */
     public function isClientRessourcesEntryPoint(): bool
     {
-        return $this->checker->routeCheck();
+        return str_contains($this->inspector->getParameter('_route'), '_client_');
     }
 
     /**
@@ -59,6 +67,16 @@ class RequestValidator
      */
     public function isClientSameOnUri(): bool
     {
-        return $this->checker->ownerIdcheck();
+        return (int)$this->inspector->getParameter('id') === $this->jwt->getClaim('id');
+    }
+
+    /**
+     * Check if request contain a route in parameter bag
+     *
+     * @return boolean
+     */
+    public function isRouteExist(): bool
+    {
+        return (null !== $this->inspector->getParameter('_route'));
     }
 }
