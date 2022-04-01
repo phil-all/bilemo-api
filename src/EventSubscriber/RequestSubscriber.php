@@ -2,9 +2,9 @@
 
 namespace App\EventSubscriber;
 
-use App\Service\RequestValidator\RequestValidator;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use App\Service\SubscriberResponder\Responder as Responder;
+use App\Service\RequestValidator\RequestValidator as Validator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -14,20 +14,25 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class RequestSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var RequestValidator
+     * @var Validator
      */
-    private RequestValidator $request;
+    private Validator $validator;
+
+    /**
+     * @var Responder
+     */
+    private Responder $responder;
 
     /**
      * RequestSubscriber constructor
      *
-     * @param RequestValidator $request
-     *
-     * @return void
+     * @param Validator $validator
+     * @param Responder $responder
      */
-    public function __construct(RequestValidator $request)
+    public function __construct(Validator $validator, Responder $responder)
     {
-        $this->request = $request;
+        $this->validator = $validator;
+        $this->responder = $responder;
     }
 
     /**
@@ -39,19 +44,12 @@ class RequestSubscriber implements EventSubscriberInterface
      */
     public function onKernelRequest(RequestEvent $event): void
     {
-        $this->request->init($event->getRequest());
+        $this->validator->init($event->getRequest());
 
-        if ($this->request->isClientRessourcesEntryPoint() && !$this->request->isClientSameOnUri()) {
-            $message = [
-                'error' => 'You are not the user specified in client id, ressoureces requeted are not your own.',
-            ];
+        if ($this->validator->isClientRessourcesEntryPoint() && !$this->validator->isClientSameOnUri()) {
+            $message = 'You are not the user specified in client id uri part. Ressoureces requested are not your own.';
 
-            /** @var JsonResponse $response */
-            $response = new JsonResponse($message, 403);
-
-            $response->headers->set('Content-Type', 'application/ld+json');
-
-            $event->setResponse($response);
+            $event->setResponse($this->responder->getErrorJsonResponse($message, 403));
         }
     }
 
