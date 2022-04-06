@@ -38,20 +38,6 @@ class RequestInspector
     }
 
     /**
-     * Get the ressource type targeted by the route
-     *
-     * @param Request $request
-     *
-     * @return string|null
-     */
-    public function getRessourceType(Request $request): ?string
-    {
-        $route = $request->attributes->get('_route');
-
-        return preg_replace('/(.)*_/', '', $route);
-    }
-
-    /**
      * Get the request attributes parameter by its name
      *
      * @param string $name
@@ -60,7 +46,28 @@ class RequestInspector
      */
     public function getParameter(string $name): ?string
     {
-        //dd($this->getInParameterBag('_route'));
         return $this->request->attributes->get($name);
+    }
+
+    /**
+     * Get route from parameter bag
+     *
+     * @return string|null
+     */
+    public function getRoute(): ?string
+    {
+        return $this->getParameter('_route');
+    }
+
+    /**
+     * Get request query string parameters ($_GET).
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getQueryParameter(string $name): string
+    {
+        return (string)$this->request->query->get($name);
     }
 }
