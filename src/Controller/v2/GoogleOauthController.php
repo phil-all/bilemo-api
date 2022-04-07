@@ -5,7 +5,6 @@ namespace App\Controller\v2;
 use DateTime;
 use App\Repository\ClientRepository;
 use App\Service\Google\GoogleInspector;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\RequestValidator\RequestValidator;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -61,7 +60,7 @@ class GoogleOauthController extends AbstractController
             return $this->redirectToRoute('connect_google_check_failed');
         }
 
-        $googleIdToken = $google->getGoogleIdToken();
+        $googleIdToken = $google->getIdToken();
 
         $email = $google->getEmail();
 
