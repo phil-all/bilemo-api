@@ -77,7 +77,7 @@
     },
     "scripts": {
         "dev-bash": [
-            "docker exec -it bilemo-api_php_1 bash"
+            "docker exec -it bilemoapi-php bash"
         ],
         "grum": [
             "vendor/bin/grumphp run"
