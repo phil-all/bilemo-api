@@ -36,10 +36,10 @@ class ClientFixtures extends Fixture implements DependentFixtureInterface
             $client = new Client();
 
             $client
-                ->setEmail($faker->companyEmail())
+                ->setEmail($i === 0 ? 'user.test.bilemo@gmail.com' : $faker->companyEmail())
                 ->setRoles(['ROLE_CLIENT'])
                 ->setPassword($this->hasher->hashPassword($client, 'pass1234'))
-                ->setCompany($faker->lastName() . ' ' . $faker->companySuffix())
+                ->setCompany($i === 0 ? 'Demo' : $faker->lastName() . ' ' . $faker->companySuffix())
                 ->setDiscountRate($faker->randomFloat(2, 1, 20));
 
             $manager->persist($client);

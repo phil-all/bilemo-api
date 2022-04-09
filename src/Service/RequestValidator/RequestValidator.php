@@ -2,8 +2,8 @@
 
 namespace App\Service\RequestValidator;
 
+use App\Repository\ClientRepository;
 use Symfony\Component\HttpFoundation\Request;
-use App\Service\RequestValidator\Components\Checker;
 use App\Service\JWTTokenInspector\JWTTokenInspector as JWT;
 use App\Service\RequestInspector\RequestInspector as Inspector;
 
@@ -24,15 +24,22 @@ class RequestValidator
     private JWT $jwt;
 
     /**
+     * @var ClientRepository
+     */
+    private ClientRepository $clientRepository;
+
+    /**
      * RequestValidator constructor
      *
-     * @param Inspector $inspector
-     * @param JWT       $jwt
+     * @param Inspector        $inspector
+     * @param JWT              $jwt
+     * @param ClientRepository $clientRepository
      */
-    public function __construct(Inspector $inspector, JWT $jwt)
+    public function __construct(Inspector $inspector, JWT $jwt, ClientRepository $clientRepository)
     {
-        $this->inspector = $inspector;
-        $this->jwt       = $jwt;
+        $this->inspector        = $inspector;
+        $this->jwt              = $jwt;
+        $this->clientRepository = $clientRepository;
     }
 
     /**
@@ -46,7 +53,6 @@ class RequestValidator
     {
         $this->inspector->setRequest($request);
         $this->jwt->setRequest($request);
-
         return $this;
     }
 
@@ -57,7 +63,7 @@ class RequestValidator
      */
     public function isClientRessourcesEntryPoint(): bool
     {
-        return str_contains($this->inspector->getParameter('_route'), '_client_');
+        return str_contains($this->inspector->getRoute(), '_client_');
     }
 
     /**
@@ -67,7 +73,9 @@ class RequestValidator
      */
     public function isClientSameOnUri(): bool
     {
-        return (int)$this->inspector->getParameter('id') === $this->jwt->getClaim('id');
+        $idFromEmailInJwt = $this->clientRepository->getIdByEmail($this->jwt->getClaim('email'));
+
+        return (int)$this->inspector->getParameter('id') === $idFromEmailInJwt;
     }
 
     /**
@@ -77,6 +85,41 @@ class RequestValidator
      */
     public function isRouteExist(): bool
     {
-        return (null !== $this->inspector->getParameter('_route'));
+        return !empty($this->inspector->getRoute());
+    }
+
+    /**
+     * Verify if a querry parameter exist
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function isQueryParamExists(string $name): bool
+    {
+        return !empty($this->inspector->getQueryParameter($name));
+    }
+
+    /**
+     * Check if route is for login
+     *
+     * @return boolean
+     */
+    public function isLoginRoute(): bool
+    {
+        return str_contains($this->inspector->getRoute(), 'login');
+    }
+
+    /**
+     * Checks if a route neeed authentication
+     *
+     * @return boolean
+     */
+    public function isRouteNeedAuth()
+    {
+        return
+            str_contains($this->inspector->getRoute(), 'product')
+            ||
+            str_contains($this->inspector->getRoute(), 'client');
     }
 }

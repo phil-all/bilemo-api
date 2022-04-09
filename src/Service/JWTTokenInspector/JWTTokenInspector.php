@@ -16,6 +16,11 @@ class JWTTokenInspector
     private Request $request;
 
     /**
+     * @var string
+     */
+    private string $token;
+
+    /**
      * Set the request value
      *
      * @param Request $request
@@ -25,6 +30,7 @@ class JWTTokenInspector
     public function setRequest(Request $request): void
     {
         $this->request = $request;
+        $this->setToken();
     }
 
     /**
@@ -40,13 +46,27 @@ class JWTTokenInspector
     }
 
     /**
-     * Get token from request
+     * Get token value
      *
      * @return string
      */
-    private function getToken(): string
+    public function getToken(): string
     {
-        return preg_replace('/Bearer /', '', $this->request->headers->get('authorization'));
+        return $this->token;
+    }
+
+    /**
+     * Set third party Token
+     *
+     * @param string $token
+     *
+     * @return self
+     */
+    public function setTokenFromThirdParty(string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
     }
 
     /**
@@ -54,7 +74,7 @@ class JWTTokenInspector
      *
      * @return array
      */
-    private function getDecodePayload(): array
+    public function getDecodePayload(): array
     {
         $token = explode('.', $this->getToken());
 
@@ -65,5 +85,25 @@ class JWTTokenInspector
         );
 
         return json_decode($data, true);
+    }
+
+    /**
+     * Get a cleaned token
+     *
+     * @return string
+     */
+    public function getCleanedToken(): string
+    {
+        return preg_replace('/Bearer /', '', $this->request->headers->get('authorization'));
+    }
+
+    /**
+     * Set token from request headers
+     *
+     * @return void
+     */
+    private function setToken(): void
+    {
+        $this->token = $this->getCleanedToken();
     }
 }

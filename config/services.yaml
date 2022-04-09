@@ -1,5 +1,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    oauth.google.redirect.uri: '%env(OAUTH_GOOGLE_REDIRECT_URI)%'
+    oauth.google.client.id: '%env(OAUTH_GOOGLE_CLIENT_ID)%'
+    oauth.google.client.secret: '%env(OAUTH_GOOGLE_CLIENT_SECRET)%'
 
 services:
 
@@ -15,7 +18,7 @@ services:
             - '../src/Kernel.php'
 
     acme_api.event.authentication_failure_listener:
-        class: App\EventListener\AuthenticationFailureListener
+        class: App\EventListener\JWTAuthenticationFailureListener
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_failure, method: onAuthenticationFailureResponse }
 

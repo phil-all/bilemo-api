@@ -18,7 +18,7 @@ class Responder
      *
      * @return JsonResponse
      */
-    public function getErrorJsonResponse(string $message, int $statusCode): JsonResponse
+    public function getErrorJsonResponse(string|array $message, int $statusCode): JsonResponse
     {
         $message = [
             'error' => $message,

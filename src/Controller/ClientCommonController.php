@@ -17,11 +17,19 @@ use App\Service\FormErrorConvertor\FormValidationHandler as Validator;
 /**
  * Manage clients entry points for versions 1 & 2
  * @package App\Controller
+ *
+ * @Route("/api")
  */
 class ClientCommonController extends AbstractController
 {
     /**
-     * @Route("/clients/{id}/shoppers", name="api_client_get_shoppers", methods={"GET"})
+     * @Route("/v1/clients/{id}/shoppers", name="api_v1_client_get_shoppers", methods={"GET"})
+     * @Route("/v2/clients/{id}/shoppers", name="api_v2_client_get_shoppers", methods={"GET"})
+     *
+     * @param Request $request
+     * @param Pager   $pager
+     *
+     * @return JsonResponse
      */
     public function showAllUsers(Request $request, Pager $pager): JsonResponse
     {
@@ -33,8 +41,14 @@ class ClientCommonController extends AbstractController
     }
 
     /**
-     * @Route("/clients/{id}/shoppers/{shopper_id}", name="api_client_get_shopper", methods={"GET"})
+     * @Route("/v1/clients/{id}/shoppers/{shopper_id}", name="api_v1_client_get_shopper", methods={"GET"})
+     * @Route("/v2/clients/{id}/shoppers/{shopper_id}", name="api_v2_client_get_shopper", methods={"GET"})
+     *
      * @ParamConverter("shopper", options={"mapping": {"shopper_id":"id"}})
+     *
+     * @param Shopper $shopper
+     *
+     * @return JsonResponse
      */
     public function showOneUser(Shopper $shopper): JsonResponse
     {
@@ -42,7 +56,15 @@ class ClientCommonController extends AbstractController
     }
 
     /**
-     * @Route("/clients/{id}/shoppers", name="api_client_post_shopper", methods={"POST"})
+     * @Route("/v1/clients/{id}/shoppers", name="api_v1_client_post_shopper", methods={"POST"})
+     * @Route("/v2/clients/{id}/shoppers", name="api_v2_client_post_shopper", methods={"POST"})
+     *
+     * @param Request           $request
+     * @param Client            $client
+     * @param ShopperRepository $repo
+     * @param Validator         $validator
+     *
+     * @return JsonResponse
      */
     public function new(Request $request, Client $client, ShopperRepository $repo, Validator $validator): JsonResponse
     {
@@ -60,8 +82,15 @@ class ClientCommonController extends AbstractController
     }
 
     /**
-     * @Route("/clients/{id}/shoppers/{shopper_id}", name="api_client_delete_shopper", methods={"DELETE"})
+     * @Route("/v1/clients/{id}/shoppers/{shopper_id}", name="api_v1_client_delete_shopper", methods={"DELETE"})
+     * @Route("/v2/clients/{id}/shoppers/{shopper_id}", name="api_v2_client_delete_shopper", methods={"DELETE"})
+     *
      * @ParamConverter("shopper", options={"mapping": {"shopper_id":"id"}})
+     *
+     * @param Shopper           $shopper
+     * @param ShopperRepository $repo
+     *
+     * @return JsonResponse
      */
     public function remove(Shopper $shopper, ShopperRepository $repo): JsonResponse
     {
