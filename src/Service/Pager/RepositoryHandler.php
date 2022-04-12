@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Pager\Repository;
+namespace App\Service\Pager;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -38,7 +38,7 @@ class RepositoryHandler
      */
     public function __construct(ManagerRegistry $manager)
     {
-        $this->manager    = $manager;
+        $this->manager = $manager;
     }
 
     /**
@@ -49,19 +49,21 @@ class RepositoryHandler
     /**
      * Get Repository and set properties
      *
-     * @param string       $main
+     * @param string       $mainEntity
      * @param integer      $currentPage
      * @param integer      $limit
-     * @param integer|null $secondaryId
+     * @param integer|null $secondaryEntityId
      *
-     * @return void
+     * @return self
      */
-    public function buildRepo(string $main, int $currentPage, int $limit, ?int $secondaryId): void
+    public function buildRepo(string $mainEntity, int $currentPage, int $limit, ?int $secondaryEntityId): self
     {
-        $this->repository  = $this->getRepository($main);
+        $this->repository  = $this->getRepository($mainEntity);
         $this->currentPage = $currentPage;
         $this->limit       = $limit;
-        $this->secondaryId = $secondaryId;
+        $this->secondaryId = $secondaryEntityId;
+
+        return $this;
     }
 
     /**
