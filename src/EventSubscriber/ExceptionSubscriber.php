@@ -8,7 +8,6 @@ use Doctrine\DBAL\Exception\DriverException;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\SubscriberResponder\Responder;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use App\Service\RequestInspector\RequestInspector as Inspector;
 use App\Service\RequestValidator\RequestValidator as Validator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -32,22 +31,15 @@ class ExceptionSubscriber implements EventSubscriberInterface
     private Responder $responder;
 
     /**
-     * @var Inspector
-     */
-    private Inspector $inspector;
-
-    /**
      * ExceptionSubscriber contructor
      *
      * @param Validator $validator
      * @param Responder $responder
-     * @param Inspector $inspector
      */
-    public function __construct(Validator $validator, Responder $responder, Inspector $inspector)
+    public function __construct(Validator $validator, Responder $responder)
     {
         $this->validator = $validator;
         $this->responder = $responder;
-        $this->inspector = $inspector;
     }
 
     /**
@@ -80,8 +72,8 @@ class ExceptionSubscriber implements EventSubscriberInterface
 
         $this->validator->init($request);
 
-        if ($event->getThrowable() instanceof NotFoundHttpException && $this->validator->isRouteExist()) {
-            $message = 'The required ' . $this->inspector->getRessourceType($request) . ' does not exists.';
+        if ($event->getThrowable() instanceof NotFoundHttpException) {
+            $message = 'Requested ressource may not exist. It can not be found.';
             $status  = 404;
         }
 
