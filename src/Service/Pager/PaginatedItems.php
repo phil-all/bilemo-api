@@ -85,7 +85,7 @@ class PaginatedItems
             ? $this->repository->selectOnSingleTalbe()
             : $this->repository->selectOnJoinedTables();
 
-        foreach ($items as $item) {
+        foreach ($items as &$item) {
             $url = $this->router->generate(
                 $this->requestInspector->getRoute(),
                 array('id' => $item['id']),
