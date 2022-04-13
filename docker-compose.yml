@@ -23,11 +23,9 @@ services:
             - .:/var/www
         links:
             - dbpostgres
-            - varnish
         networks:
             - php-net
             - data-net
-            - varnish-net
             - redis-net
 
     dbpostgres:
@@ -69,19 +67,20 @@ services:
         image: varnish
         restart: unless-stopped
         volumes:
-          - ./.docker/conf/varnish/default.vcl:/etc/varnish/default.vcl:ro
-        tmpfs: /var/lib/varnish:exec
+            - ./.docker/conf/varnish/default.vcl:/etc/varnish/default.vcl:ro
         networks:
-          - php-net
+            - php-net
         ports:
-          - 80:80
+            - 80:80
+        depends_on:
+            - web
 
     redis:
         container_name: bilemoapi-redis
         build: ./.docker/conf/redis
         image: 'redis:6.0.5'
         ports:
-          - '6379:6379'
+            - '6379:6379'
         networks:
             - redis-net
 
