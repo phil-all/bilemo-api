@@ -56,11 +56,27 @@ class Pagination
      *      type="array",
      *      @OA\Items(
      *          @OA\Property(property="count", type="integer", example="26"),
-     *          @OA\Property(property="first", type="string", example="example link to a page"),
-     *          @OA\Property(property="previous", type="string", example="example link to a page"),
-     *          @OA\Property(property="self", type="integer", example="example link to a page"),
-     *          @OA\Property(property="next", type="string", example="example link to a page"),
-     *          @OA\Property(property="last", type="string", example="example link to a page")
+     *          @OA\Property(
+     *              property="first",
+     *              type="string",
+     *              example="https://bilemo-domain.com/api/v1/.../example?page=1"
+     *          ),
+     *          @OA\Property(
+     *              property="previous",
+     *              type="string",
+     *              example="https://bilemo-domain.com/api/v1/.../example?page=1"
+     *          ),
+     *          @OA\Property(property="self", type="integer", example=2),
+     *          @OA\Property(
+     *              property="next",
+     *              type="string",
+     *              example="https://bilemo-domain.com/api/v1/.../example?page=3"
+     *          ),
+     *          @OA\Property(
+     *              property="last",
+     *              type="string",
+     *              example="https://bilemo-domain.com/api/v1/.../example?page=26"
+     *          )
      *      )
      * )
      */
