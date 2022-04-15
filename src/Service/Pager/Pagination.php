@@ -8,6 +8,7 @@ use App\Service\Pager\RepositoryHandler;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\RequestInspector\RequestInspector;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Pagination Builder for Pager service
@@ -116,6 +117,10 @@ class Pagination
         $this->mainEntity      = $mainEntity;
         $this->limit           = $limit;
         $this->secondaryEntityId = $secondaryEntityId;
+
+        if ($this->getCurrentPage($this->requestInspector) > $this->getPageCount()) {
+            throw new NotFoundHttpException();
+        }
 
         $this->setPagination();
     }

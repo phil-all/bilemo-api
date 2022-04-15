@@ -11,8 +11,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use App\Service\RequestValidator\RequestValidator as Validator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Exception subscriber
@@ -51,17 +50,14 @@ class ExceptionSubscriber implements EventSubscriberInterface
      */
     public function onKernelException(ExceptionEvent $event): void
     {
-        $message = 'Internal Server Error';
-        $status  = 500;
+        $message = null;
+        $status  = null;
 
         /** @var Request $request */
         $request = $event->getRequest();
 
-        if ($event->getThrowable() instanceof IdentityProviderException) {
-            /** @var IdentityProviderException $exception */
-            $exception = $event->getThrowable();
-
-            $message = $exception->getResponseBody();
+        if ($event->getThrowable() instanceof BadRequestHttpException) {
+            $message = 'Bad Request, please check your body request';
             $status  = 400;
         }
 
@@ -82,7 +78,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
             $status  = 500;
         }
 
-        if (!$event->getThrowable() instanceof AuthenticationException) {
+        if ($status !== null) {
             $event->setResponse($this->responder->getErrorJsonResponse($message, $status));
         }
     }

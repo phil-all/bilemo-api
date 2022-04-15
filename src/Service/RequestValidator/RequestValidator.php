@@ -8,6 +8,7 @@ use App\Repository\ShopperRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\JWTTokenInspector\JWTTokenInspector as JWT;
 use App\Service\RequestInspector\RequestInspector as Inspector;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Used to validate request
@@ -101,6 +102,10 @@ class RequestValidator
 
         /** @var Shopper $shopper */
         $shopper = $this->shopperRepository->find($this->inspector->getParameter('shopper_id'));
+
+        if (!$this->shopperRepository->isShopperExist((int)$this->inspector->getParameter('shopper_id'))) {
+            throw new NotFoundHttpException();
+        }
 
         $ownerId = $shopper->getClient()->getId();
 
