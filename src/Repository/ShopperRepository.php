@@ -63,4 +63,22 @@ class ShopperRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+
+    /**
+     * Checks if a shopper exist
+     *
+     * @param integer $shopperId
+     *
+     * @return boolean
+     */
+    public function isShopperExist(int $shopperId): bool
+    {
+        return $this
+            ->createQueryBuilder('s')
+            ->select('count(s.id)')
+            ->where('s.id = :id')
+            ->setParameter('id', $shopperId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
