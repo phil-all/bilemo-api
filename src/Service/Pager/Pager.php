@@ -2,9 +2,12 @@
 
 namespace App\Service\Pager;
 
+use OpenApi\Annotations as OA;
+use App\Service\Pager\Pagination;
+use App\Service\Pager\PaginatedItems;
+use App\Service\Pager\RepositoryHandler;
 use Symfony\Component\HttpFoundation\Request;
-use App\Service\Pager\Repository\RepositoryHandler;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Service\RequestInspector\RequestInspector;
 
 /**
  * Pager, a generic pagination service.
@@ -12,25 +15,22 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Pager
 {
-    /**
-     * @var string
-     */
-    private string $main;
+    use Helper;
 
     /**
-     * @var integer
+     * @var RequestInspector
      */
-    private int $limit;
+    private RequestInspector $requestInspector;
 
     /**
-     * @var Request
+     * @var Pagination
      */
-    private Request $request;
+    private Pagination $pagination;
 
     /**
-     * @var UrlGeneratorInterface
+     * @var PaginatedItems
      */
-    private UrlGeneratorInterface $router;
+    private PaginatedItems $paginatedItems;
 
     /**
      * @var RepositoryHandler
@@ -38,20 +38,33 @@ class Pager
     private RepositoryHandler $repository;
 
     /**
-     * @var integer|null
+     * @var Request
      */
-    private ?int $secondaryId = null;
+    private Request $request;
+
+    /**
+     * @var array<object>
+     */
+    protected array $items;
 
     /**
      * Pager constructor
      *
-     * @param UrlGeneratorInterface $router
-     * @param RepositoryHandler     $repo
+     * @param Pagination        $pagination
+     * @param PaginatedItems    $paginatedItems
+     * @param RequestInspector  $requestInspector
+     * @param RepositoryHandler $repository
      */
-    public function __construct(UrlGeneratorInterface $router, RepositoryHandler $repo)
-    {
-        $this->router     = $router;
-        $this->repository = $repo;
+    public function __construct(
+        Pagination $pagination,
+        PaginatedItems $paginatedItems,
+        RequestInspector $requestInspector,
+        RepositoryHandler $repository
+    ) {
+        $this->pagination        = $pagination;
+        $this->paginatedItems    = $paginatedItems;
+        $this->requestInspector  = $requestInspector;
+        $this->repository        = $repository;
     }
 
     /**
@@ -59,169 +72,65 @@ class Pager
      *
      * @param Request     $request
      * @param integer     $limit
-     * @param string      $main main entity required (eg EntityName::class)
-     * @param string|null $secondary optionnal: entity managing the main entity
+     * @param string      $mainEntity
+     * @param string|null $secondaryEntity
      *
      * @return void
      */
-    public function init(Request $request, int $limit, string $main, ?string $secondary = null): void
+    public function init(Request $request, int $limit, string $mainEntity, ?string $secondaryEntity = null): void
     {
         $this->request = $request;
-        $this->limit   = $limit;
-        $this->main    = $main;
 
-        $this->setSecondary($request, $secondary);
+        $this->repository->buildRepo(
+            $mainEntity,
+            $this->getCurrentPage($this->requestInspector),
+            $limit,
+            $this->getSecondaryEntityId($secondaryEntity)
+        );
 
-        $this->repository->buildRepo($main, $this->getCurrentPage(), $limit, $this->secondaryId);
+        $this->pagination->init(
+            $this->repository,
+            $mainEntity,
+            $limit,
+            $this->getSecondaryEntityId($secondaryEntity)
+        );
+
+        $this->paginatedItems->init($this->repository, $this->getSecondaryEntityId($secondaryEntity));
     }
 
     /**
-     * Get the paginated datas
+     * Get the pagination datas
      *
-     * @return array<array>
+     * @return array
      */
-    public function paginate(): array
+    public function getPagination(): array
     {
-        /** @var array */
-        $items = $this->getPaginatedItems();
-
-        /** @var string $className */
-        $className = strtolower((new \ReflectionClass($this->main))->getShortName());
-
-        foreach ($items as &$item) {
-            $url = $this->router->generate(
-                $this->request->attributes->get('_route'),
-                [
-                    'id' => $item['id']
-                ],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-
-            $item = array_merge($item, ['Link' => $url . '/' . $item['id']]);
-        }
-
-        return [
-            'pagination' => [
-                'pages'    => $this->getPageCount(),
-                'fisrt'    => $this->getFirst(),
-                'previous' => $this->getPrevious(),
-                'self'     => $this->getCurrentPage(),
-                'next'     => $this->getNext(),
-                'last'     => $this->getLast()
-            ],
-            $className . 's' => $items
-        ];
-    }
-
-    /**
-     * Set parameters if secondary entity exists
-     *
-     * @param Request $request
-     * @param string  $secondary
-     *
-     * @return void
-     */
-    private function setSecondary(Request $request, ?string $secondary): void
-    {
-        if (null !== $secondary) {
-            $this->secondaryId = $request->attributes->get('id');
-        }
+        return $this->pagination->getPagination();
     }
 
     /**
      * Get paginated items
      *
-     * @return array<object>
+     * @return array
      */
-    private function getPaginatedItems(): array
+    public function getPaginatedItems(): array
     {
-        return (null === $this->secondaryId)
-            ? $this->repository->selectOnSingleTalbe()
-            : $this->repository->selectOnJoinedTables();
+        return $this->paginatedItems->getPaginatedItems();
     }
 
     /**
-     * Get pages count
+     * Set secondary entity id if exists
      *
-     * @return integer
+     * @param string|null $secondaryEntity
+     *
+     * @return integer|null
      */
-    private function getPageCount(): int
+    private function getSecondaryEntityId(?string $secondaryEntity): ?int
     {
-        $count = (null === $this->secondaryId)
-            ? $this->repository->countSingleTable()
-            : $this->repository->countJoinedTables();
+        if (null !== $secondaryEntity) {
+            return $this->request->attributes->get('id');
+        }
 
-        return (int)ceil($count / $this->limit);
-    }
-
-    /**
-     * Get the previous page url if exists
-     *
-     * @return string|null
-     */
-    private function getPrevious(): ?string
-    {
-        return ($this->getCurrentPage() === 1) ? null : $this->getPageUrl($this->getCurrentPage() - 1);
-    }
-
-    /**
-     * Get the next page url if exists
-     *
-     * @return string|null
-     */
-    private function getNext(): ?string
-    {
-        return ($this->getCurrentPage() < $this->getPageCount())
-            ? $this->getPageUrl($this->getCurrentPage() + 1)
-            : null;
-    }
-
-    /**
-     * Get the first page url
-     *
-     * @return string
-     */
-    private function getFirst(): string
-    {
-        return $this->getPageUrl(1);
-    }
-
-    /**
-     * Get the last page url
-     *
-     * @return string
-     */
-    private function getLast(): string
-    {
-        return $this->getPageUrl($this->getPageCount());
-    }
-
-    /**
-     * Get a page url
-     *
-     * @param integer $page
-     *
-     * @return string
-     */
-    private function getPageUrl(int $page): string
-    {
-        return $this->router->generate(
-            $this->getCurrentRoute(),
-            [
-                'page' => $page,
-                'id'   => $this->secondaryId
-            ],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-    }
-
-    private function getCurrentRoute(): string
-    {
-        return $this->request->attributes->get('_route');
-    }
-
-    private function getCurrentPage(): int
-    {
-        return (int)$this->request->query->get('page', 1);
+        return null;
     }
 }

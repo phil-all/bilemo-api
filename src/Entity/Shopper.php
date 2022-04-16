@@ -3,12 +3,15 @@
 namespace App\Entity;
 
 use App\Entity\Client;
+use OpenApi\Annotations as OA;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ShopperRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ShopperRepository::class)
+ *
+ * @OA\Schema()
  */
 class Shopper
 {
@@ -16,25 +19,33 @@ class Shopper
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"user:get-one"})
+     * @Groups({"shopper:get-all", "get-one"})
+     *
+     * @OA\Property()
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:get-one"})
+     * @Groups({"shopper:get-all", "get-one"})
+     *
+     * @OA\Property()
      */
     private string $email;
 
     /**
      * @ORM\Column(type="string", length=45)
-     * @Groups({"user:get-one"})
+     * @Groups("get-one")
+     *
+     * @OA\Property()
      */
     private string $firstName;
 
     /**
      * @ORM\Column(type="string", length=45)
-     * @Groups({"user:get-one"})
+     * @Groups("get-one")
+     *
+     * @OA\Property()
      */
     private string $lastName;
 

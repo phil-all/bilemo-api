@@ -51,6 +51,12 @@ class RequestSubscriber implements EventSubscriberInterface
 
             $event->setResponse($this->responder->getErrorJsonResponse($message, 403));
         }
+
+        if (null !== $event->getRequest()->attributes->get('shopper_id') && !$this->validator->isShopperOwner()) {
+            $message = 'Shopper required is not your own';
+
+            $event->setResponse($this->responder->getErrorJsonResponse($message, 403));
+        }
     }
 
     /**

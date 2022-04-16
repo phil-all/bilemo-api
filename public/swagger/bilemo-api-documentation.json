@@ -1,0 +1,936 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Bilemo catalog",
+        "description": "API provinding restrited access to the Bilemo catalog to authenticated clients.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "127.0.0.1:8100",
+            "description": "Dockeriezd localhost"
+        }
+    ],
+    "paths": {
+        "/api/v1/clients/{client_id}/shoppers": {
+            "get": {
+                "tags": [
+                    "Clients v1"
+                ],
+                "summary": "Get shoppers list for a given client",
+                "operationId": "showAllShoppers",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer JWT Token",
+                        "required": true,
+                        "schema": {
+                            "type": "bearerAuth"
+                        }
+                    },
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "description": "Client id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Pagination"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedShoppers"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token invalid or expire",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Bad Request: Your token is invalid."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Token is missing, please login to get one."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbiden access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Ressoureces requested are not your own."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Internal server error."
+                            }
+                        }
+                    }
+                },
+                "security": {
+                    "bearerAuth": {}
+                }
+            },
+            "post": {
+                "tags": [
+                    "Clients v1"
+                ],
+                "summary": "Create a new shopper from a client",
+                "operationId": "postNewShopper",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer JWT Token",
+                        "required": true,
+                        "schema": {
+                            "type": "bearerAuth"
+                        }
+                    },
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "description": "Client id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "client credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "Client id",
+                                        "type": "integer",
+                                        "example": 564
+                                    },
+                                    "email": {
+                                        "description": "Client email",
+                                        "type": "string",
+                                        "example": "john.doe@gmaiol.com"
+                                    },
+                                    "firstName": {
+                                        "description": "Client password",
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "lastName": {
+                                        "description": "Client password",
+                                        "type": "string",
+                                        "example": "Doe"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shopper"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token invalid or expire",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Bad Request: Your token is invalid."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Token is missing, please login to get one."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbiden access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Ressoureces requested are not your own."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Internal server error."
+                            }
+                        }
+                    }
+                },
+                "security": {
+                    "bearerAuth": {}
+                }
+            }
+        },
+        "/api/v1/clients/{client_id}/shoppers/{shopper_id}": {
+            "get": {
+                "tags": [
+                    "Clients v1"
+                ],
+                "summary": "Get one shopper from a given client",
+                "operationId": "showOneShopper",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer JWT Token",
+                        "required": true,
+                        "schema": {
+                            "type": "bearerAuth"
+                        }
+                    },
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "description": "Client id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "shopper_id",
+                        "in": "path",
+                        "description": "Shopper id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shopper"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token invalid or expire",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Bad Request: Your token is invalid."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Token is missing, please login to get one."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbiden access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Ressoureces requested are not your own."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Required ressource not found."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Internal server error."
+                            }
+                        }
+                    }
+                },
+                "security": {
+                    "bearerAuth": {}
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Clients v1"
+                ],
+                "summary": "Delete a shopper from a given client",
+                "operationId": "remove",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer JWT Token",
+                        "required": true,
+                        "schema": {
+                            "type": "bearerAuth"
+                        }
+                    },
+                    {
+                        "name": "client_id",
+                        "in": "path",
+                        "description": "Client id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "shopper_id",
+                        "in": "path",
+                        "description": "Shopper id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Token invalid or expire",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Bad Request: Your token is invalid."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Token is missing, please login to get one."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbiden access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Ressoureces requested are not your own."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Required ressource not found."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Internal server error."
+                            }
+                        }
+                    }
+                },
+                "security": {
+                    "bearerAuth": {}
+                }
+            }
+        },
+        "/api/v1/products": {
+            "get": {
+                "tags": [
+                    "Products v1"
+                ],
+                "summary": "Get products",
+                "operationId": "showAllProducts",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer JWT Token",
+                        "required": true,
+                        "schema": {
+                            "type": "bearerAuth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Pagination"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedProducts"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token invalid or expire",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Bad Request: Your token is invalid."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Token is missing, please login to get one."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbiden access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Ressoureces requested are not your own."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Internal server error."
+                            }
+                        }
+                    }
+                },
+                "security": {
+                    "bearerAuth": {}
+                }
+            }
+        },
+        "/api/v1/products/{product_id}": {
+            "get": {
+                "tags": [
+                    "Products v1"
+                ],
+                "summary": "Get product detail",
+                "operationId": "showOneProduct",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Bearer JWT Token",
+                        "required": true,
+                        "schema": {
+                            "type": "bearerAuth"
+                        }
+                    },
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "description": "Product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Product"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/Options"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token invalid or expire",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Bad Request: Your token is invalid."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Token is missing, please login to get one."
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbiden access",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Ressoureces requested are not your own."
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Required ressource not found."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Internal server error."
+                            }
+                        }
+                    }
+                },
+                "security": {
+                    "bearerAuth": {}
+                }
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Authentication v1"
+                ],
+                "summary": "Authentication with email and pasword",
+                "operationId": "index",
+                "requestBody": {
+                    "description": "client credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "Client email",
+                                        "type": "string",
+                                        "example": "user.test.bilemo@gmail.com"
+                                    },
+                                    "password": {
+                                        "description": "Client password",
+                                        "type": "string",
+                                        "example": "pass1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authentication successfull, get a JSON object with token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "description": "JWT Token",
+                                            "type": "string",
+                                            "example": "ezg54zegz48eQZREg6z4.aareg8ra6g4a6gQR4a68g4a6g8r.arQRGg46a874gar87g6arg76a7grza7g"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Bad credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Bad credentials, please verify that your username or password are correctly set"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Internal server error."
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Product": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "5"
+                    },
+                    "ean13": {
+                        "type": "string",
+                        "example": "0440710192709"
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "example": "344"
+                    },
+                    "model": {
+                        "example": {
+                            "designation": "B-950 Xserie",
+                            "description": "Nouveau B-950 Xserie, Processeur Qualcomm Snapdragon 680 - 4 Go de RAM - 64 Go de ROM.",
+                            "price": 1370,
+                            "size": {
+                                "size": 7.3
+                            }
+                        }
+                    },
+                    "color": {
+                        "example": "maroon"
+                    }
+                },
+                "type": "object"
+            },
+            "Shopper": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Pagination": {
+                "description": "Pagination Builder for Pager service",
+                "properties": {
+                    "pagination": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "count": {
+                                    "type": "integer",
+                                    "example": "26"
+                                },
+                                "first": {
+                                    "type": "string",
+                                    "example": "https://bilemo-domain.com/api/v1/.../example?page=1"
+                                },
+                                "previous": {
+                                    "type": "string",
+                                    "example": "https://bilemo-domain.com/api/v1/.../example?page=1"
+                                },
+                                "self": {
+                                    "type": "integer",
+                                    "example": 2
+                                },
+                                "next": {
+                                    "type": "string",
+                                    "example": "https://bilemo-domain.com/api/v1/.../example?page=3"
+                                },
+                                "last": {
+                                    "type": "string",
+                                    "example": "https://bilemo-domain.com/api/v1/.../example?page=26"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Options": {
+                "description": "Class for swagger documention use only,\nIt represent model options list (many to many relation)",
+                "properties": {
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "option": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "example": [
+                            {
+                                "option": "double optique arrière"
+                            },
+                            {
+                                "option": "connectivité 5G"
+                            },
+                            {
+                                "option": "touch ID"
+                            }
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedProducts": {
+                "description": "Class for swagger documention use only,\nIt represent shopper use of PaginatedItms from Pager service",
+                "properties": {
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Product"
+                        },
+                        "example": [
+                            {
+                                "id": 1,
+                                "ean13": "1858712497644",
+                                "stock": 3510,
+                                "link": "https://bilemo-domain.com/api/v1/products/1"
+                            },
+                            {
+                                "id": 2,
+                                "ean13": "3419465021012",
+                                "stock": 7082,
+                                "link": "https://bilemo-domain.com/api/v1/products/2"
+                            },
+                            {
+                                "id": 3,
+                                "ean13": "9608795894784",
+                                "stock": 1891,
+                                "link": "https://bilemo-domain.com/api/v1/products/3"
+                            },
+                            {
+                                "id": 4,
+                                "ean13": "5865688046901",
+                                "stock": 7076,
+                                "link": "https://bilemo-domain.com/api/v1/products/4"
+                            },
+                            {
+                                "id": 5,
+                                "ean13": "0440710192709",
+                                "stock": 344,
+                                "link": "https://bilemo-domain.com/api/v1/products/5"
+                            },
+                            {
+                                "id": 6,
+                                "ean13": "7061485365704",
+                                "stock": 6556,
+                                "link": "https://bilemo-domain.com/api/v1/products/6"
+                            },
+                            {
+                                "id": 7,
+                                "ean13": "1088440691582",
+                                "stock": 2821,
+                                "link": "https://bilemo-domain.com/api/v1/products/7"
+                            }
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedShoppers": {
+                "description": "Class for swagger documention use only,\nIt represent product use PaginatedItems from Pager service",
+                "properties": {
+                    "shoppers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Shopper"
+                        },
+                        "example": [
+                            {
+                                "id": 1,
+                                "email": "john.doe@gmail.com",
+                                "link": "https://bilemo-domain.com/api/v1/clients/1/shoppers/1"
+                            },
+                            {
+                                "id": 2,
+                                "email": "jane.arrow@gmail.com",
+                                "link": "https://bilemo-domain.com/api/v1/clients/1/shoppers/2"
+                            },
+                            {
+                                "id": 3,
+                                "email": "mimi.che@gmail.com",
+                                "link": "https://bilemo-domain.com/api/v1/clients/1/shoppers/3"
+                            },
+                            {
+                                "id": 4,
+                                "email": "bernard.chante@gmail.com",
+                                "link": "https://bilemo-domain.com/api/v1/clients/1/shoppers/4"
+                            },
+                            {
+                                "id": 5,
+                                "email": "bibi.isworking@gmail.com",
+                                "link": "https://bilemo-domain.com/api/v1/clients/1/shoppers/5"
+                            },
+                            {
+                                "id": 6,
+                                "email": "bonneannee@gmail.com",
+                                "link": "https://bilemo-domain.com/api/v1/clients/1/shoppers/6"
+                            },
+                            {
+                                "id": 7,
+                                "email": "under.nier@gmail.com",
+                                "link": "https://bilemo-domain.com/api/v1/clients/1/shoppers/7"
+                            }
+                        ]
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "Authorization",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "Bearer"
+            }
+        }
+    }
+}

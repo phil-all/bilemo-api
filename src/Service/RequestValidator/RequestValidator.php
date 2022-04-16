@@ -2,10 +2,13 @@
 
 namespace App\Service\RequestValidator;
 
+use App\Entity\Shopper;
 use App\Repository\ClientRepository;
+use App\Repository\ShopperRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\JWTTokenInspector\JWTTokenInspector as JWT;
 use App\Service\RequestInspector\RequestInspector as Inspector;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Used to validate request
@@ -29,17 +32,27 @@ class RequestValidator
     private ClientRepository $clientRepository;
 
     /**
+     * @var ShopperRepository
+     */
+    private ShopperRepository $shopperRepository;
+
+    /**
      * RequestValidator constructor
      *
      * @param Inspector        $inspector
      * @param JWT              $jwt
      * @param ClientRepository $clientRepository
      */
-    public function __construct(Inspector $inspector, JWT $jwt, ClientRepository $clientRepository)
-    {
-        $this->inspector        = $inspector;
-        $this->jwt              = $jwt;
-        $this->clientRepository = $clientRepository;
+    public function __construct(
+        Inspector $inspector,
+        JWT $jwt,
+        ClientRepository $clientRepository,
+        ShopperRepository $shopperRepository
+    ) {
+        $this->inspector         = $inspector;
+        $this->jwt               = $jwt;
+        $this->clientRepository  = $clientRepository;
+        $this->shopperRepository = $shopperRepository;
     }
 
     /**
@@ -76,6 +89,27 @@ class RequestValidator
         $idFromEmailInJwt = $this->clientRepository->getIdByEmail($this->jwt->getClaim('email'));
 
         return (int)$this->inspector->getParameter('id') === $idFromEmailInJwt;
+    }
+
+    /**
+     * Check if authenticated client is owner of shopper in uri
+     *
+     * @return boolean
+     */
+    public function isShopperOwner(): bool
+    {
+        $idFromEmailInJwt = $this->clientRepository->getIdByEmail($this->jwt->getClaim('email'));
+
+        /** @var Shopper $shopper */
+        $shopper = $this->shopperRepository->find($this->inspector->getParameter('shopper_id'));
+
+        if (!$this->shopperRepository->isShopperExist((int)$this->inspector->getParameter('shopper_id'))) {
+            throw new NotFoundHttpException();
+        }
+
+        $ownerId = $shopper->getClient()->getId();
+
+        return $idFromEmailInJwt === $ownerId;
     }
 
     /**
