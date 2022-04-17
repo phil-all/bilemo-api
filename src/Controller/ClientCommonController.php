@@ -24,8 +24,8 @@ use App\Service\FormErrorConvertor\FormValidationHandler as Validator;
 class ClientCommonController extends AbstractController
 {
     /**
-     * @Route("/v1/clients/{id}/shoppers", name="api_v1_client_get_shoppers", methods={"GET"})
-     * @Route("/v2/clients/{id}/shoppers", name="api_v2_client_get_shoppers", methods={"GET"})
+     * @Route("/v1/clients/{id<\d+>}/shoppers", name="api_v1_client_get_shoppers", methods={"GET"})
+     * @Route("/v2/clients/{id<\d+>}/shoppers", name="api_v2_client_get_shoppers", methods={"GET"})
      *
      * @OA\Get(
      *      path="/api/v1/clients/{client_id}/shoppers",
@@ -115,8 +115,8 @@ class ClientCommonController extends AbstractController
     }
 
     /**
-     * @Route("/v1/clients/{id}/shoppers/{shopper_id}", name="api_v1_client_get_shopper", methods={"GET"})
-     * @Route("/v2/clients/{id}/shoppers/{shopper_id}", name="api_v2_client_get_shopper", methods={"GET"})
+     * @Route("/v1/clients/{id<\d+>}/shoppers/{shopper_id<\d+>}", name="api_v1_client_get_shopper", methods={"GET"})
+     * @Route("/v2/clients/{id<\d+>}/shoppers/{shopper_id<\d+>}", name="api_v2_client_get_shopper", methods={"GET"})
      *
      * @OA\Get(
      *      path="/api/v1/clients/{client_id}/shoppers/{shopper_id}",
@@ -207,8 +207,8 @@ class ClientCommonController extends AbstractController
     }
 
     /**
-     * @Route("/v1/clients/{id}/shoppers", name="api_v1_client_post_shopper", methods={"POST"})
-     * @Route("/v2/clients/{id}/shoppers", name="api_v2_client_post_shopper", methods={"POST"})
+     * @Route("/v1/clients/{id<\d+>}/shoppers", name="api_v1_client_post_shopper", methods={"POST"})
+     * @Route("/v2/clients/{id<\d+>}/shoppers", name="api_v2_client_post_shopper", methods={"POST"})
      *
      * @OA\Post(
      *      path="/api/v1/clients/{client_id}/shoppers",
@@ -324,8 +324,16 @@ class ClientCommonController extends AbstractController
     }
 
     /**
-     * @Route("/v1/clients/{id}/shoppers/{shopper_id}", name="api_v1_client_delete_shopper", methods={"DELETE"})
-     * @Route("/v2/clients/{id}/shoppers/{shopper_id}", name="api_v2_client_delete_shopper", methods={"DELETE"})
+     * @Route(
+     *      "/v1/clients/{id<\d+>}/shoppers/{shopper_id<\d+>}",
+     *      name="api_v1_client_delete_shopper",
+     *      methods={"DELETE"}
+     * )
+     * @Route(
+     *      "/v2/clients/{id<\d+>}/shoppers/{shopper_id<\d+>}",
+     *      name="api_v2_client_delete_shopper",
+     *      methods={"DELETE"}
+     * )
      *
      * @OA\Delete(
      *      path="/api/v1/clients/{client_id}/shoppers/{shopper_id}",
