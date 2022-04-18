@@ -31,12 +31,9 @@ services:
     dbpostgres:
         container_name: bilemoapi-postgres
         image: postgres
-        # # permet de stocker l'ensemble du contenu du dossier /var/lib/mysql dans un disque persistant
         volumes:
             - pg_data:/var/lib/postgresql/data
-        # politique de redémarrage du conteneur en cas d'erreur fatale
         restart: always
-        # valeurs des différents mots de passe et utilisateurs qui doivent exister sur cette base
         environment:
             POSTGRES_DB: bilemoapi
             POSTGRES_USER: user

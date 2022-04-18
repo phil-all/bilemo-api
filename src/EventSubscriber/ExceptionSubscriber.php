@@ -2,7 +2,6 @@
 
 namespace App\EventSubscriber;
 
-use Throwable;
 use ErrorException;
 use Doctrine\DBAL\Exception\DriverException;
 use Symfony\Component\HttpFoundation\Request;

@@ -2,7 +2,6 @@
 
 namespace App\Controller\v2;
 
-use DateTime;
 use App\Repository\ClientRepository;
 use App\Service\Google\GoogleInspector;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,9 +62,6 @@ class GoogleOauthController extends AbstractController
         $googleIdToken = $google->getIdToken();
 
         $email = $google->getEmail();
-
-        // $expiration = $google->getExpires();
-        // $now = (new DateTime())->getTimestamp();
 
         if (!$clientRepository->isClientExist($email)) {
             return $this->redirectToRoute('connect_google_check_failed');

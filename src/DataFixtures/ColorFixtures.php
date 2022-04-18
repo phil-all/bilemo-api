@@ -16,7 +16,7 @@ class ColorFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create('fr, FR');
+        $faker = Factory::create('fr_FR');
 
         for ($i = 0; $i < 8; $i++) {
             $color = (new Color())->setColor($faker->safeColorName());

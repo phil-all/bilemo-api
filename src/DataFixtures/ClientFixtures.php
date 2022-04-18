@@ -2,10 +2,8 @@
 
 namespace App\DataFixtures;
 
-use DateTime;
 use Faker\Factory;
 use App\Entity\Client;
-use DateTimeImmutable;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;

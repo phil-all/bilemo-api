@@ -4,7 +4,6 @@ namespace App\EventListener;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
-use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationFailureResponse;
 
 /**
  * Listener to set a custom response when JWT authentication failure event

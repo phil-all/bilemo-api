@@ -3,10 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Model;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Model|null find($id, $lockMode = null, $lockVersion = null)
@@ -44,33 +44,4 @@ class ModelRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
-    // /**
-    //  * @return Model[] Returns an array of Model objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Model
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
