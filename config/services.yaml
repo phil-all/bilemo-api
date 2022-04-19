@@ -1,4 +1,3 @@
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     oauth.google.redirect.uri: '%env(OAUTH_GOOGLE_REDIRECT_URI)%'
     oauth.google.client.id: '%env(OAUTH_GOOGLE_CLIENT_ID)%'
@@ -7,8 +6,8 @@ parameters:
 services:
 
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true 
+        autoconfigure: true
 
     App\:
         resource: '../src/'

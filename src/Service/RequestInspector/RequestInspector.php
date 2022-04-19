@@ -70,18 +70,4 @@ class RequestInspector
     {
         return (string)$this->request->query->get($name);
     }
-
-    /**
-     * Get the ressource type targeted by the route
-     *
-     * @param Request $request
-     *
-     * @return string|null
-     */
-    public function getRessourceType(Request $request): ?string
-    {
-        $route = $request->attributes->get('_route');
-
-        return preg_replace('/(.)*_/', '', $route);
-    }
 }

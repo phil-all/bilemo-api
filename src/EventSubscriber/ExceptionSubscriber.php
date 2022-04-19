@@ -2,7 +2,6 @@
 
 namespace App\EventSubscriber;
 
-use Throwable;
 use ErrorException;
 use Doctrine\DBAL\Exception\DriverException;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +11,8 @@ use App\Service\RequestValidator\RequestValidator as Validator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\ControllerDoesNotReturnResponseException;
 
 /**
  * Exception subscriber
@@ -73,7 +74,16 @@ class ExceptionSubscriber implements EventSubscriberInterface
             $status  = 404;
         }
 
-        if ($event->getThrowable() instanceof ErrorException) {
+        if ($event->getThrowable() instanceof MethodNotAllowedHttpException) {
+            $message = "HTTP method not allowed";
+            $status  = 405;
+        }
+
+        if (
+            $event->getThrowable() instanceof ErrorException
+            ||
+            $event->getThrowable() instanceof ControllerDoesNotReturnResponseException
+        ) {
             $message = "Internal Server Error";
             $status  = 500;
         }

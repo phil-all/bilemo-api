@@ -103,8 +103,8 @@ class ProductCommonController extends AbstractController
     }
 
     /**
-     * @Route("/v1/products/{id}", name="api_v1_get_product")
-     * @Route("/v2/products/{id}", name="api_v2_get_product")
+     * @Route("/v1/products/{id<\d+>}", name="api_v1_get_product", methods={"GET"})
+     * @Route("/v2/products/{id<\d+>}", name="api_v2_get_product", methods={"GET"})
      *
      * @OA\Get(
      *      path="/api/v1/products/{product_id}",

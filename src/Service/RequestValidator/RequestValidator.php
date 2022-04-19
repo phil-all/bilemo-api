@@ -113,16 +113,6 @@ class RequestValidator
     }
 
     /**
-     * Check if request contain a route in parameter bag
-     *
-     * @return boolean
-     */
-    public function isRouteExist(): bool
-    {
-        return !empty($this->inspector->getRoute());
-    }
-
-    /**
      * Verify if a querry parameter exist
      *
      * @param string $name
@@ -132,28 +122,5 @@ class RequestValidator
     public function isQueryParamExists(string $name): bool
     {
         return !empty($this->inspector->getQueryParameter($name));
-    }
-
-    /**
-     * Check if route is for login
-     *
-     * @return boolean
-     */
-    public function isLoginRoute(): bool
-    {
-        return str_contains($this->inspector->getRoute(), 'login');
-    }
-
-    /**
-     * Checks if a route neeed authentication
-     *
-     * @return boolean
-     */
-    public function isRouteNeedAuth()
-    {
-        return
-            str_contains($this->inspector->getRoute(), 'product')
-            ||
-            str_contains($this->inspector->getRoute(), 'client');
     }
 }

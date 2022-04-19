@@ -2,9 +2,6 @@
 
 namespace App\Service;
 
-use Faker\Factory as Build;
-use Faker\Generator as Fake;
-
 /**
  * FakeMobile, used for data fixtures
  * @package  App\Service

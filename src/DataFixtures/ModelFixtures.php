@@ -19,7 +19,7 @@ class ModelFixtures extends Fixture implements DependentFixtureInterface
     {
         for ($i = 0; $i < 15; $i++) {
             $faker = new FakeMobile();
-            $rand = Factory::create();
+            $rand  = Factory::create();
 
             $model = (new Model())
                 ->setDesignation($faker->getDesignation())
